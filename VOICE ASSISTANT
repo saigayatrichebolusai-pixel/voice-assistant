@@ -1,0 +1,129 @@
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import webbrowser
+import os
+
+# Initialize speech recognition and text-to-speech
+recognizer = sr.Recognizer()
+engine = pyttsx3.init()
+
+# Set voice properties
+engine.setProperty("rate", 170)
+
+
+# Function to speak
+def speak(text):
+    print("Assistant:", text)
+    engine.say(text)
+    engine.runAndWait()
+
+
+# Function to listen to the user
+def listen():
+    with sr.Microphone() as source:
+        print("\nListening...")
+        recognizer.adjust_for_ambient_noise(source, duration=1)
+
+        try:
+            audio = recognizer.listen(source, timeout=5, phrase_time_limit=8)
+            command = recognizer.recognize_google(audio)
+
+            print("You:", command)
+            return command.lower()
+
+        except sr.WaitTimeoutError:
+            speak("I didn't hear anything.")
+            return ""
+
+        except sr.UnknownValueError:
+            speak("Sorry, I could not understand you.")
+            return ""
+
+        except sr.RequestError:
+            speak("Sorry, there is a problem with the speech recognition service.")
+            return ""
+
+
+# Function to perform commands
+def execute_command(command):
+
+    # Tell the time
+    if "time" in command:
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
+        speak("The current time is " + current_time)
+
+    # Tell the date
+    elif "date" in command:
+        current_date = datetime.datetime.now().strftime("%d %B %Y")
+        speak("Today's date is " + current_date)
+
+    # Open Google
+    elif "open google" in command:
+        speak("Opening Google.")
+        webbrowser.open("https://www.google.com")
+
+    # Open YouTube
+    elif "open youtube" in command:
+        speak("Opening YouTube.")
+        webbrowser.open("https://www.youtube.com")
+
+    # Open GitHub
+    elif "open github" in command:
+        speak("Opening GitHub.")
+        webbrowser.open("https://github.com")
+
+    # Search Google
+    elif "search for" in command:
+        search_query = command.replace("search for", "").strip()
+
+        if search_query:
+            speak("Searching for " + search_query)
+            url = "https://www.google.com/search?q=" + search_query.replace(" ", "+")
+            webbrowser.open(url)
+        else:
+            speak("Please tell me what you want to search for.")
+
+    # Open calculator
+    elif "open calculator" in command:
+        speak("Opening calculator.")
+
+        try:
+            os.system("calc")
+        except:
+            speak("I could not open the calculator.")
+
+    # Greeting
+    elif "hello" in command or "hi" in command:
+        speak("Hello! How can I help you?")
+
+    # Exit
+    elif "exit" in command or "stop" in command or "goodbye" in command:
+        speak("Goodbye! Have a nice day.")
+        return False
+
+    # Unknown command
+    else:
+        speak("Sorry, I don't know how to perform that command.")
+
+    return True
+
+
+# Main program
+def main():
+
+    speak("Hello! I am your voice assistant.")
+    speak("How can I help you?")
+
+    running = True
+
+    while running:
+        command = listen()
+
+        if command:
+            running = execute_command(command)
+
+
+# Start the program
+if __name__ == "__main__":
+    main()
