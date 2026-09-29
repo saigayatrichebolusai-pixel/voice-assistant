@@ -150,8 +150,8 @@ The objective of this project is to develop a basic **voice-controlled assistant
 
 ## 👨‍💻 Author
 
-**POLAVARAPU DIVYASREE**
-**INTEGRATED MTECH COMPUTATIONAL AND DATA SCIENCE**
+**SAI GAYATRI CHEBOLU**
+**INTEGRATED MTECH ARTIFICAL INTELLIGENCE AND BIOINFORMATICS**
 
 **VIT Bhopal University**
 
